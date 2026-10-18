@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Lost &amp; Found Matching Portal</title>
+    <title>Manipal University Jaipur - Campus Lost &amp; Found Portal</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,13 +16,14 @@
             <div class="brand-group" onclick="navigateTo('dashboard')">
                 <div class="brand-logo">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        <circle cx="12" cy="11" r="3"/>
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
                     </svg>
                 </div>
                 <div class="brand-text">
-                    <span class="brand-title">Campus<span class="accent-text">Find</span></span>
-                    <span class="brand-subtitle">Lost &amp; Found Matching System</span>
+                    <span class="brand-title">MUJ <span class="accent-text">Lost &amp; Found</span></span>
+                    <span class="brand-subtitle">Manipal University Jaipur</span>
                 </div>
             </div>
 
@@ -36,7 +37,7 @@
                     <span>Browse Items</span>
                 </button>
                 <button class="nav-link" data-view="matches" onclick="navigateTo('matches')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                     <span>Match Engine</span>
                     <span class="nav-badge" id="nav-match-count">0</span>
                 </button>
@@ -65,31 +66,31 @@
             <!-- Hero Welcome -->
             <div class="dashboard-hero">
                 <div class="hero-content">
-                    <div class="hero-badge">University Campus Operations</div>
-                    <h1 class="hero-title">Recover Belongings with Precision Matching</h1>
+                    <div class="hero-badge">Manipal University Jaipur &bull; Campus Portal</div>
+                    <h1 class="hero-title">Recover Misplaced Belongings Across MUJ Campus</h1>
                     <p class="hero-description">
-                        An intelligent object-oriented lost-and-found system powered by multi-criteria heuristic scoring. Report items, track custody, and connect with finders across campus.
+                        Automated, rule-based lost-and-found matching designed for students and faculty of Manipal University Jaipur. Real-time pairing across <strong>Library, AB1, AB2, AB3, LHC</strong>, Food Court, and Hostels with Student Registration Number verification.
                     </p>
                     <div class="hero-cta-group">
-                        <button class="btn btn-orange btn-lg" onclick="navigateTo('report-lost')">Report a Lost Item</button>
-                        <button class="btn btn-navy btn-lg" onclick="navigateTo('report-found')">Report a Found Item</button>
+                        <button class="btn btn-orange btn-lg" onclick="navigateTo('report-lost')">Report Lost Item</button>
+                        <button class="btn btn-navy btn-lg" onclick="navigateTo('report-found')">Report Found Item</button>
                         <button class="btn btn-outline btn-lg" onclick="navigateTo('matches')">View Potential Matches</button>
                     </div>
                 </div>
                 <div class="hero-status-card">
                     <div class="status-indicator-header">
                         <span class="pulse-dot"></span>
-                        <span class="status-label">Storage Engine Active</span>
+                        <span class="status-label">MUJ Storage Vault Online</span>
                     </div>
-                    <p class="storage-desc">Backed by Java Object Serialization in <code>items.dat</code></p>
+                    <p class="storage-desc">File-based serialization persistent in <code>items.dat</code></p>
                     <div class="status-meta">
                         <div class="meta-item">
                             <span class="meta-label">Total Records</span>
                             <span class="meta-value" id="status-total-count">0</span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-label">Storage File</span>
-                            <span class="meta-value">items.dat</span>
+                            <span class="meta-label">Campus</span>
+                            <span class="meta-value">MUJ Jaipur</span>
                         </div>
                     </div>
                 </div>
@@ -120,7 +121,7 @@
                     <div class="stat-info">
                         <span class="stat-label">Found Items Turned In</span>
                         <div class="stat-number" id="stat-found-count">0</div>
-                        <span class="stat-subtext">Ready for owner verification</span>
+                        <span class="stat-subtext">In custody awaiting owner claim</span>
                     </div>
                     <div class="stat-arrow">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -163,7 +164,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title-group">
-                            <span class="panel-badge-navy">Feed</span>
+                            <span class="panel-badge-navy">MUJ Feed</span>
                             <h2 class="panel-title">Recent Campus Notices</h2>
                         </div>
                         <button class="btn-link" onclick="navigateTo('browse')">Browse All &rarr;</button>
@@ -181,8 +182,8 @@
         <section id="browse-view" class="view-section">
             <div class="section-header">
                 <div>
-                    <h1 class="section-title">Campus Item Directory</h1>
-                    <p class="section-subtitle">Search and filter reported items by keywords, category, or campus location.</p>
+                    <h1 class="section-title">MUJ Campus Item Directory</h1>
+                    <p class="section-subtitle">Search by keyword, item category, or filter by specific MUJ academic and campus locations.</p>
                 </div>
                 <div class="section-header-actions">
                     <button class="btn btn-outline" onclick="resetSearchFilters()">Reset Filters</button>
@@ -193,7 +194,7 @@
             <div class="filter-toolbar">
                 <div class="search-box">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" id="search-input" placeholder="Search by item name (e.g., Wallet, MacBook, Keys)..." oninput="handleSearchChange()">
+                    <input type="text" id="search-input" placeholder="Search by item name or description (e.g. ID card, Laptop, Wallet)..." oninput="handleSearchChange()">
                     <button id="search-clear-btn" class="clear-input-btn" onclick="clearSearchInput()" style="display:none;">&times;</button>
                 </div>
 
@@ -205,7 +206,7 @@
                             <option value="Accessories">Accessories</option>
                             <option value="Electronics">Electronics</option>
                             <option value="Wallets & Bags">Wallets &amp; Bags</option>
-                            <option value="Documents & IDs">Documents &amp; IDs</option>
+                            <option value="Documents & IDs">Documents &amp; Student IDs</option>
                             <option value="Keys">Keys</option>
                             <option value="Books & Stationery">Books &amp; Stationery</option>
                             <option value="Clothing">Clothing</option>
@@ -215,17 +216,19 @@
                     </div>
 
                     <div class="select-group">
-                        <label for="location-filter">Campus Location</label>
+                        <label for="location-filter">MUJ Campus Location</label>
                         <select id="location-filter" onchange="handleSearchChange()">
-                            <option value="">All Locations</option>
+                            <option value="">All MUJ Locations</option>
                             <option value="Library">Central Library</option>
-                            <option value="Cafeteria">Cafeteria / Food Court</option>
-                            <option value="Science Block">Science Block / Labs</option>
-                            <option value="Sports Complex">Sports Complex / Gym</option>
-                            <option value="Student Union">Student Union / Lounge</option>
-                            <option value="Lecture Hall">Lecture Halls</option>
-                            <option value="Auditorium">Auditorium</option>
-                            <option value="Main Quad">Campus Quad / Grounds</option>
+                            <option value="AB1">AB1 (Academic Block 1)</option>
+                            <option value="AB2">AB2 (Academic Block 2)</option>
+                            <option value="AB3">AB3 (Academic Block 3)</option>
+                            <option value="LHC">LHC (Lecture Hall Complex)</option>
+                            <option value="Food Court">Food Court / Mess</option>
+                            <option value="Hostels">Hostel Blocks (B1-B12 / G1-G4)</option>
+                            <option value="Sports Complex">Sports Complex</option>
+                            <option value="Campus Quad">Grand Shanti / Campus Quad</option>
+                            <option value="Other">Other Campus Area</option>
                         </select>
                     </div>
 
@@ -243,7 +246,6 @@
             <!-- Results Meta & Grid -->
             <div class="results-meta-bar">
                 <span id="results-count-text">Showing 0 items</span>
-                <span class="results-filter-badges" id="active-filters-badges"></span>
             </div>
 
             <div id="items-grid" class="items-grid">
@@ -251,8 +253,8 @@
             </div>
             <div id="no-items-placeholder" class="empty-state" style="display: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                <h3>No items matched your query</h3>
-                <p>Try clearing filters or search with another keyword.</p>
+                <h3>No items match your criteria</h3>
+                <p>Try searching for another keyword or clear the filters.</p>
                 <button class="btn btn-navy" onclick="resetSearchFilters()">Reset All Filters</button>
             </div>
         </section>
@@ -263,17 +265,17 @@
         <section id="report-lost-view" class="view-section">
             <div class="form-container">
                 <div class="form-header">
-                    <div class="form-badge badge-lost">Lost Item Notice</div>
+                    <div class="form-badge badge-lost">Lost Item Notice &bull; MUJ</div>
                     <h1 class="form-title">Report a Lost Item</h1>
-                    <p class="form-subtitle">Provide detailed information to help our algorithmic matcher pair this with found items.</p>
+                    <p class="form-subtitle">Submit details of the misplaced item with your Student Registration Number for automated matching.</p>
                 </div>
 
                 <form id="lost-form" onsubmit="handleReportLost(event)" class="campus-form">
                     <div class="form-grid">
                         <div class="form-field full-width">
                             <label for="lost-name">Item Name <span class="required">*</span></label>
-                            <input type="text" id="lost-name" required placeholder="e.g., Black Leather Wallet, Space Grey MacBook, Blue HydroFlask">
-                            <span class="field-hint">Use a descriptive title for accurate keyword matching.</span>
+                            <input type="text" id="lost-name" required placeholder="e.g. Black Leather Wallet, Space Grey MacBook, MUJ Student ID Card">
+                            <span class="field-hint">Use a descriptive title for accurate keyword and title matching.</span>
                         </div>
 
                         <div class="form-field">
@@ -283,7 +285,7 @@
                                 <option value="Accessories">Accessories</option>
                                 <option value="Electronics">Electronics</option>
                                 <option value="Wallets & Bags">Wallets &amp; Bags</option>
-                                <option value="Documents & IDs">Documents &amp; IDs</option>
+                                <option value="Documents & IDs">Documents &amp; Student IDs</option>
                                 <option value="Keys">Keys</option>
                                 <option value="Books & Stationery">Books &amp; Stationery</option>
                                 <option value="Clothing">Clothing</option>
@@ -293,8 +295,26 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="lost-location">Location Last Seen <span class="required">*</span></label>
-                            <input type="text" id="lost-location" required placeholder="e.g., Library, Reading Desk 4, Cafeteria">
+                            <label for="lost-location">MUJ Campus Location Last Seen <span class="required">*</span></label>
+                            <select id="lost-location-select" required onchange="handleLocationSelectChange('lost')">
+                                <option value="" disabled selected>Select MUJ Location...</option>
+                                <option value="Library">Central Library</option>
+                                <option value="AB1">AB1 (Academic Block 1)</option>
+                                <option value="AB2">AB2 (Academic Block 2)</option>
+                                <option value="AB3">AB3 (Academic Block 3)</option>
+                                <option value="LHC">LHC (Lecture Hall Complex)</option>
+                                <option value="Food Court">Food Court / Mess</option>
+                                <option value="Hostels">Hostel Blocks (B1-B12 / G1-G4)</option>
+                                <option value="Sports Complex">Sports Complex</option>
+                                <option value="Campus Quad">Grand Shanti / Campus Quad</option>
+                                <option value="Other">Other Location</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="lost-specific-spot">Specific Spot / Room / Desk</label>
+                            <input type="text" id="lost-specific-spot" placeholder="e.g. Room 310, Reading Desk 4, Audi 2">
+                            <span class="field-hint">Added to location notes for precise identification.</span>
                         </div>
 
                         <div class="form-field">
@@ -303,19 +323,25 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="lost-reporter">Your Full Name <span class="required">*</span></label>
-                            <input type="text" id="lost-reporter" required placeholder="e.g., Jane Doe / Student A">
+                            <label for="lost-reporter">Student Full Name <span class="required">*</span></label>
+                            <input type="text" id="lost-reporter" required placeholder="e.g. Aryan Sharma">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="lost-regno">MUJ Registration Number <span class="required">*</span></label>
+                            <input type="text" id="lost-regno" required placeholder="e.g. 229301045" pattern="[A-Za-z0-9\-]+" title="Please enter your MUJ Registration Number">
+                            <span class="field-hint">Your official university student registration number.</span>
                         </div>
 
                         <div class="form-field full-width">
-                            <label for="lost-contact">Your Contact Email or Phone <span class="required">*</span></label>
-                            <input type="text" id="lost-contact" required placeholder="e.g., janedoe@campus.edu or +1 555-0199">
-                            <span class="field-hint">This will be shared only when a high-confidence match is verified.</span>
+                            <label for="lost-contact">Contact Email or Phone Number <span class="required">*</span></label>
+                            <input type="text" id="lost-contact" required placeholder="e.g. aryan.229301045@muj.manipal.edu or +91 9876543210">
+                            <span class="field-hint">Will be shared with verified finders when a match is found.</span>
                         </div>
 
                         <div class="form-field full-width">
                             <label for="lost-description">Item Description &amp; Distinctive Features <span class="required">*</span></label>
-                            <textarea id="lost-description" rows="4" required placeholder="Include brand, color, stickers, scratches, cards inside, or any unique distinguishing characteristics for Jaccard similarity scoring..."></textarea>
+                            <textarea id="lost-description" rows="4" required placeholder="Provide color, brand, stickers, cards inside, scratches, or unique marks for Jaccard similarity scoring..."></textarea>
                         </div>
                     </div>
 
@@ -336,17 +362,17 @@
         <section id="report-found-view" class="view-section">
             <div class="form-container">
                 <div class="form-header">
-                    <div class="form-badge badge-found">Found Item Custody</div>
+                    <div class="form-badge badge-found">Found Item Custody &bull; MUJ</div>
                     <h1 class="form-title">Report a Found Item</h1>
-                    <p class="form-subtitle">Thank you for helping our campus community! Log the item so the rightful owner can be notified.</p>
+                    <p class="form-subtitle">Log the item found on campus so the rightful MUJ student or staff member can reclaim it.</p>
                 </div>
 
                 <form id="found-form" onsubmit="handleReportFound(event)" class="campus-form">
                     <div class="form-grid">
                         <div class="form-field full-width">
                             <label for="found-name">Item Name <span class="required">*</span></label>
-                            <input type="text" id="found-name" required placeholder="e.g., Black Leather Wallet, AirPods Charging Case, Spiral Notebook">
-                            <span class="field-hint">Describe what the item is as accurately as possible.</span>
+                            <input type="text" id="found-name" required placeholder="e.g. Blue HydroFlask Bottle, AirPods Case, Scientific Calculator">
+                            <span class="field-hint">Accurately describe what the item is.</span>
                         </div>
 
                         <div class="form-field">
@@ -356,7 +382,7 @@
                                 <option value="Accessories">Accessories</option>
                                 <option value="Electronics">Electronics</option>
                                 <option value="Wallets & Bags">Wallets &amp; Bags</option>
-                                <option value="Documents & IDs">Documents &amp; IDs</option>
+                                <option value="Documents & IDs">Documents &amp; Student IDs</option>
                                 <option value="Keys">Keys</option>
                                 <option value="Books & Stationery">Books &amp; Stationery</option>
                                 <option value="Clothing">Clothing</option>
@@ -366,8 +392,26 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="found-location">Location Where Found <span class="required">*</span></label>
-                            <input type="text" id="found-location" required placeholder="e.g., Library 2nd Floor, Science Quad bench, Cafeteria">
+                            <label for="found-location">MUJ Campus Location Found <span class="required">*</span></label>
+                            <select id="found-location-select" required onchange="handleLocationSelectChange('found')">
+                                <option value="" disabled selected>Select MUJ Location...</option>
+                                <option value="Library">Central Library</option>
+                                <option value="AB1">AB1 (Academic Block 1)</option>
+                                <option value="AB2">AB2 (Academic Block 2)</option>
+                                <option value="AB3">AB3 (Academic Block 3)</option>
+                                <option value="LHC">LHC (Lecture Hall Complex)</option>
+                                <option value="Food Court">Food Court / Mess</option>
+                                <option value="Hostels">Hostel Blocks (B1-B12 / G1-G4)</option>
+                                <option value="Sports Complex">Sports Complex</option>
+                                <option value="Campus Quad">Grand Shanti / Campus Quad</option>
+                                <option value="Other">Other Location</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="found-specific-spot">Specific Spot / Room / Landmark</label>
+                            <input type="text" id="found-specific-spot" placeholder="e.g. AB1 Lab 204, LHC Audi 1, Library 1st Floor">
+                            <span class="field-hint">Pinpoint where the item was discovered.</span>
                         </div>
 
                         <div class="form-field">
@@ -376,19 +420,25 @@
                         </div>
 
                         <div class="form-field">
-                            <label for="found-reporter">Found By (Your Name) <span class="required">*</span></label>
-                            <input type="text" id="found-reporter" required placeholder="e.g., Student B / Campus Security">
+                            <label for="found-reporter">Found By (Your Full Name) <span class="required">*</span></label>
+                            <input type="text" id="found-reporter" required placeholder="e.g. Priya Verma / Security Guard Ram">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="found-regno">Finder Reg No. / Staff ID <span class="required">*</span></label>
+                            <input type="text" id="found-regno" required placeholder="e.g. 229301120 or MUJ-STAFF-09">
+                            <span class="field-hint">Student Registration Number or University Staff ID.</span>
                         </div>
 
                         <div class="form-field full-width">
-                            <label for="found-contact">Founder Contact Details / Pickup Location <span class="required">*</span></label>
-                            <input type="text" id="found-contact" required placeholder="e.g., studentB@example.com or Campus Security Office Desk 3">
-                            <span class="field-hint">This contact info is directly provided to matched lost-item owners.</span>
+                            <label for="found-contact">Contact Info / Current Safe Custody Location <span class="required">*</span></label>
+                            <input type="text" id="found-contact" required placeholder="e.g. priya.verma@muj.manipal.edu or Security Desk at AB2 Ground Floor">
+                            <span class="field-hint">This info will be directly given to the owner once matched.</span>
                         </div>
 
                         <div class="form-field full-width">
                             <label for="found-description">Item Description &amp; Condition Details <span class="required">*</span></label>
-                            <textarea id="found-description" rows="4" required placeholder="Describe appearance, color, brand, condition, and where the item is currently kept for safe pickup..."></textarea>
+                            <textarea id="found-description" rows="4" required placeholder="Describe appearance, color, brand, condition, and where the item is kept for safe pickup..."></textarea>
                         </div>
                     </div>
 
@@ -411,17 +461,17 @@
                 <div>
                     <div class="engine-badge">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        <span>Algorithmic Matching Engine</span>
+                        <span>MUJ Intelligent Match Engine</span>
                     </div>
                     <h1 class="section-title">Potential Lost &amp; Found Matches</h1>
                     <p class="section-subtitle">
-                        Automated pairing calculated via Name Similarity (20%), Category Match (20%), Location Match (20%), Jaccard Word Similarity (25%), and Date Proximity (15%). Minimum threshold: 30%.
+                        Multi-factor heuristic evaluation: Name Similarity (20%), Category Match (20%), Location Match (20%), Jaccard Word Similarity (25%), and Date Proximity (15%). Minimum score: 30%.
                     </p>
                 </div>
                 <div class="section-header-actions">
                     <button class="btn btn-outline" onclick="loadMatches()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                        <span>Re-run Match Engine</span>
+                        <span>Re-evaluate Matches</span>
                     </button>
                 </div>
             </div>
@@ -436,7 +486,7 @@
                     </select>
                 </div>
                 <div class="match-summary-stats">
-                    <span id="match-summary-label">Showing 0 matching pairs</span>
+                    <span id="match-summary-label">Showing 0 matching pair(s)</span>
                 </div>
             </div>
 
@@ -447,8 +497,8 @@
 
             <div id="no-matches-placeholder" class="empty-state" style="display: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
-                <h3>No Matches Currently Found</h3>
-                <p>No pairs currently score &ge; 30% similarity. As new lost or found items are logged, the matcher will automatically evaluate compatibility.</p>
+                <h3>No Matches Detected Currently</h3>
+                <p>No pairs currently score &ge; 30% similarity. When new reports are submitted, compatibility is automatically recomputed.</p>
                 <div class="empty-state-actions">
                     <button class="btn btn-orange" onclick="navigateTo('report-lost')">Report Lost Item</button>
                     <button class="btn btn-navy" onclick="navigateTo('report-found')">Report Found Item</button>
@@ -476,12 +526,16 @@
                         <span id="modal-item-category" class="modal-meta-value"></span>
                     </div>
                     <div class="modal-meta-item">
-                        <span class="modal-meta-label">Campus Location</span>
+                        <span class="modal-meta-label">MUJ Location</span>
                         <span id="modal-item-location" class="modal-meta-value"></span>
                     </div>
                     <div class="modal-meta-item">
-                        <span class="modal-meta-label">Date Recorded</span>
+                        <span class="modal-meta-label">Date Logged</span>
                         <span id="modal-item-date" class="modal-meta-value"></span>
+                    </div>
+                    <div class="modal-meta-item" style="grid-column: 1 / -1;">
+                        <span class="modal-meta-label">Registration Number</span>
+                        <span id="modal-item-regno" class="modal-meta-value" style="color: var(--orange-primary);"></span>
                     </div>
                 </div>
 
@@ -491,14 +545,14 @@
                 </div>
 
                 <div class="modal-section contact-highlight">
-                    <h3 class="modal-section-title">Reporter &amp; Contact Details</h3>
+                    <h3 class="modal-section-title">Reporter &amp; Contact Information</h3>
                     <div class="modal-contact-row">
                         <div>
                             <span class="contact-sublabel">Reported by:</span>
                             <span id="modal-item-reporter" class="contact-name"></span>
                         </div>
                         <div>
-                            <span class="contact-sublabel">Contact:</span>
+                            <span class="contact-sublabel">Contact Details:</span>
                             <span id="modal-item-contact" class="contact-detail"></span>
                         </div>
                     </div>
@@ -517,12 +571,12 @@
     <footer class="app-footer">
         <div class="footer-container">
             <div class="footer-left">
-                <div class="footer-brand">CampusFind Portal</div>
-                <div class="footer-desc">Object-Oriented Lost &amp; Found Matching System | Java OOP Project Demonstration</div>
+                <div class="footer-brand">Manipal University Jaipur &bull; Campus Lost &amp; Found Portal</div>
+                <div class="footer-desc">Academic Blocks (AB1, AB2, AB3) &bull; Central Library &bull; LHC &bull; Hostels &bull; Food Court</div>
             </div>
             <div class="footer-right">
-                <span class="footer-tag">File-Based Persistence: <code>items.dat</code></span>
-                <span class="footer-tag">Architecture: Java Servlets + HTML5 / CSS3 / ES6</span>
+                <span class="footer-tag">Storage: <code>items.dat</code></span>
+                <span class="footer-tag">Java OOP Project Demonstration</span>
             </div>
         </div>
     </footer>

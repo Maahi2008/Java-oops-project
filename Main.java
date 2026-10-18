@@ -30,24 +30,26 @@ public class Main {
 
                 Item lostSample = new LostItem(
                     "L101",
-                    "Black Wallet",
-                    "Accessories",
-                    "Black leather wallet",
+                    "Black Leather Wallet",
+                    "Wallets & Bags",
+                    "Black leather wallet with MUJ ID card",
                     "Library",
                     LocalDate.now(),
-                    "Student A",
-                    "studentA@example.com"
+                    "Aryan Sharma",
+                    "aryan.229301045@muj.manipal.edu",
+                    "229301045"
                 );
 
                 Item foundSample = new FoundItem(
                     "F101",
-                    "Black Wallet",
-                    "Accessories",
-                    "Black wallet near reading desk",
+                    "Black Leather Wallet",
+                    "Wallets & Bags",
+                    "Black wallet near 2nd floor reading desk",
                     "Library",
                     LocalDate.now(),
-                    "Student B",
-                    "studentB@example.com"
+                    "Kavita Rao",
+                    "kavita.229301128@muj.manipal.edu",
+                    "229301128"
                 );
 
                 manager.addItem(lostSample);

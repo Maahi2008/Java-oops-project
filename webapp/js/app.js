@@ -1,7 +1,6 @@
 /**
- * Campus Lost & Found Matching System - Frontend Controller
- * Connects to Java Servlets (/api/*) with an integrated client-side
- * mirror matching engine for offline preview and testing.
+ * Manipal University Jaipur (MUJ) Campus Lost & Found Matching System
+ * Frontend Controller with Reg No verification & campus locations (Library, AB1, AB2, AB3, LHC).
  */
 
 // Application State
@@ -19,28 +18,54 @@ const state = {
     selectedLostIdForMatch: 'ALL'
 };
 
-// Initial sample data mirroring items.dat in Java project
+// Initial sample items tailored to Manipal University Jaipur
 const INITIAL_SAMPLE_ITEMS = [
     {
         id: "L101",
-        name: "Black Wallet",
-        category: "Accessories",
-        description: "Black leather wallet with student ID and transit pass inside",
-        location: "Library",
+        name: "Black Leather Wallet",
+        category: "Wallets & Bags",
+        description: "Black leather wallet containing MUJ Student ID and transit card",
+        location: "Library (2nd Floor Reading Hall)",
         date: "2026-10-16",
-        reporterName: "Student A",
-        contact: "studentA@example.com",
+        reporterName: "Aryan Sharma",
+        regNo: "229301045",
+        contact: "aryan.229301045@muj.manipal.edu",
         type: "LOST"
     },
     {
         id: "F101",
-        name: "Black Wallet",
-        category: "Accessories",
-        description: "Black wallet found near reading desk on the 2nd floor",
+        name: "Black Leather Wallet",
+        category: "Wallets & Bags",
+        description: "Black wallet found on 2nd floor desk near reference section",
         location: "Library",
         date: "2026-10-16",
-        reporterName: "Student B",
-        contact: "studentB@example.com",
+        reporterName: "Kavita Rao",
+        regNo: "229301128",
+        contact: "kavita.229301128@muj.manipal.edu",
+        type: "FOUND"
+    },
+    {
+        id: "L102",
+        name: "Apple AirPods Pro 2",
+        category: "Electronics",
+        description: "White AirPods Pro case with orange silicone cover and keychain",
+        location: "AB2 (Room 310)",
+        date: "2026-10-18",
+        reporterName: "Rohan Gupta",
+        regNo: "239302199",
+        contact: "rohan.239302199@muj.manipal.edu",
+        type: "LOST"
+    },
+    {
+        id: "F102",
+        name: "AirPods Pro",
+        category: "Electronics",
+        description: "Apple AirPods charging case with orange cover found in AB2 lecture room",
+        location: "AB2",
+        date: "2026-10-18",
+        reporterName: "MUJ Security Desk",
+        regNo: "MUJ-SEC-03",
+        contact: "security.ab2@jaipur.manipal.edu",
         type: "FOUND"
     }
 ];
@@ -54,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lostDateInput) lostDateInput.value = today;
     if (foundDateInput) foundDateInput.value = today;
 
-    // Load initial data
+    // Load data
     loadAllData();
 });
 
@@ -66,14 +91,17 @@ async function loadAllData() {
         const response = await fetch('api/items', { method: 'GET' });
         if (response.ok) {
             const data = await response.json();
-            state.items = data;
+            if (data && data.length > 0) {
+                state.items = data;
+            } else {
+                state.items = [...INITIAL_SAMPLE_ITEMS];
+            }
             state.isBackendOnline = true;
             await loadBackendMatches();
         } else {
-            throw new Error("Backend not responding yet");
+            throw new Error("Backend not responding");
         }
     } catch (err) {
-        // Fallback to local state if backend servlet is not yet running
         state.isBackendOnline = false;
         if (!state.items || state.items.length === 0) {
             state.items = [...INITIAL_SAMPLE_ITEMS];
@@ -94,7 +122,8 @@ async function loadBackendMatches() {
     try {
         const res = await fetch('api/matches');
         if (res.ok) {
-            state.matches = await res.json();
+            const serverMatches = await res.json();
+            state.matches = serverMatches;
         } else {
             recalculateLocalMatches();
         }
@@ -124,7 +153,6 @@ function recalculateLocalMatches() {
         }
     }
 
-    // Sort descending by score
     results.sort((a, b) => b.score - a.score);
     state.matches = results;
 }
@@ -143,9 +171,13 @@ function calculateMatchScore(lost, found) {
         score += 20;
     }
 
-    // 3. Location Match (+20)
-    if (lost.location && found.location && lost.location.toLowerCase() === found.location.toLowerCase()) {
-        score += 20;
+    // 3. Location Match (+20) (Checks if either location contains the other, e.g. "AB2" and "AB2 Room 310")
+    if (lost.location && found.location) {
+        const l1 = lost.location.toLowerCase();
+        const l2 = found.location.toLowerCase();
+        if (l1 === l2 || l1.includes(l2) || l2.includes(l1)) {
+            score += 20;
+        }
     }
 
     // 4. Description Jaccard Similarity (* 25)
@@ -206,33 +238,27 @@ function getWords(text) {
  * View Navigation System
  */
 function navigateTo(viewId) {
-    // Hide all views
     document.querySelectorAll('.view-section').forEach(el => {
         el.classList.remove('active');
     });
 
-    // Remove active state from nav buttons
     document.querySelectorAll('.nav-link').forEach(el => {
         el.classList.remove('active');
     });
 
-    // Activate target view
     const target = document.getElementById(`${viewId}-view`);
     if (target) {
         target.classList.add('active');
         state.currentView = viewId;
     }
 
-    // Highlight nav link
     const navBtn = document.querySelector(`.nav-link[data-view="${viewId}"]`);
     if (navBtn) {
         navBtn.classList.add('active');
     }
 
-    // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Refresh views if necessary
     if (viewId === 'dashboard') {
         updateDashboardStats();
     } else if (viewId === 'browse') {
@@ -278,7 +304,7 @@ function updateDashboardStats() {
                 <div class="match-mini-card" onclick="navigateTo('matches')">
                     <div class="match-mini-info">
                         <span class="match-mini-title">${escapeHtml(m.lostItem.name)} &harr; ${escapeHtml(m.foundItem.name)}</span>
-                        <span class="match-mini-details">Found at ${escapeHtml(m.foundItem.location)} &bull; ${m.foundItem.date}</span>
+                        <span class="match-mini-details">${escapeHtml(m.foundItem.location)} &bull; ${escapeHtml(m.foundItem.reporterName)} (${escapeHtml(m.foundItem.regNo || 'Staff')})</span>
                     </div>
                     <div class="match-score-pill">${m.score.toFixed(1)}%</div>
                 </div>
@@ -295,7 +321,7 @@ function updateDashboardStats() {
                 <span class="badge ${item.type === 'LOST' ? 'badge-lost' : 'badge-found'}">${item.type}</span>
                 <div class="recent-mini-details">
                     <div class="recent-mini-name">${escapeHtml(item.name)}</div>
-                    <div class="recent-mini-meta">${escapeHtml(item.location)} &bull; ${item.date}</div>
+                    <div class="recent-mini-meta">${escapeHtml(item.location)} &bull; Reg: ${escapeHtml(item.regNo || 'N/A')}</div>
                 </div>
                 <span class="item-id-pill">${item.id}</span>
             </div>
@@ -303,17 +329,11 @@ function updateDashboardStats() {
     }
 }
 
-/**
- * Filter Browse Items by Type directly from dashboard click
- */
 function filterBrowseByType(type) {
     setTypeFilter(type);
     navigateTo('browse');
 }
 
-/**
- * Set Type Filter (All, LOST, FOUND)
- */
 function setTypeFilter(type) {
     state.filters.type = type;
     document.querySelectorAll('.pill-tab').forEach(tab => {
@@ -348,9 +368,7 @@ function handleSearchChange() {
 
 function clearSearchInput() {
     const input = document.getElementById('search-input');
-    if (input) {
-        input.value = '';
-    }
+    if (input) input.value = '';
     handleSearchChange();
 }
 
@@ -365,7 +383,11 @@ function resetSearchFilters() {
 
     setTypeFilter('');
     handleSearchChange();
-    showToast('Filters reset to default view.');
+    showToast('Filters reset to default MUJ campus directory.');
+}
+
+function handleLocationSelectChange(type) {
+    // Optional hook for location select change
 }
 
 /**
@@ -379,19 +401,19 @@ function renderBrowseItems() {
     if (!grid) return;
 
     let filtered = state.items.filter(item => {
-        // Query filter (name matching)
-        if (state.filters.query && !item.name.toLowerCase().includes(state.filters.query)) {
-            return false;
+        if (state.filters.query) {
+            const q = state.filters.query;
+            const matchName = item.name.toLowerCase().includes(q);
+            const matchDesc = item.description && item.description.toLowerCase().includes(q);
+            const matchReg = item.regNo && item.regNo.toLowerCase().includes(q);
+            if (!matchName && !matchDesc && !matchReg) return false;
         }
-        // Category filter
         if (state.filters.category && item.category !== state.filters.category) {
             return false;
         }
-        // Location filter
         if (state.filters.location && !item.location.toLowerCase().includes(state.filters.location.toLowerCase())) {
             return false;
         }
-        // Type filter
         if (state.filters.type && item.type !== state.filters.type) {
             return false;
         }
@@ -426,17 +448,22 @@ function renderBrowseItems() {
                 <div class="item-meta-list">
                     <div class="item-meta-row">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span>${escapeHtml(item.location)}</span>
+                        <strong>${escapeHtml(item.location)}</strong>
                     </div>
                     <div class="item-meta-row">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                         <span>${item.date}</span>
                     </div>
+                    ${item.regNo ? `
+                    <div class="item-meta-row" style="color: var(--orange-primary); font-weight: 700;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <span>Reg No: ${escapeHtml(item.regNo)}</span>
+                    </div>` : ''}
                 </div>
 
                 <div class="item-footer-actions">
                     <div>
-                        <span class="reporter-label">${item.type === 'LOST' ? 'Owner:' : 'Finder:'}</span>
+                        <span class="reporter-label">${item.type === 'LOST' ? 'Student:' : 'Finder:'}</span>
                         <span class="reporter-name"> ${escapeHtml(item.reporterName)}</span>
                     </div>
                     <button class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">Details</button>
@@ -454,9 +481,13 @@ async function handleReportLost(e) {
 
     const name = document.getElementById('lost-name').value.trim();
     const category = document.getElementById('lost-category').value;
-    const location = document.getElementById('lost-location').value.trim();
+    const locSelect = document.getElementById('lost-location-select').value;
+    const specificSpot = document.getElementById('lost-specific-spot').value.trim();
+    const location = specificSpot ? `${locSelect} (${specificSpot})` : locSelect;
+
     const date = document.getElementById('lost-date').value;
     const reporterName = document.getElementById('lost-reporter').value.trim();
+    const regNo = document.getElementById('lost-regno').value.trim();
     const contact = document.getElementById('lost-contact').value.trim();
     const description = document.getElementById('lost-description').value.trim();
 
@@ -471,6 +502,7 @@ async function handleReportLost(e) {
         location,
         date,
         reporterName,
+        regNo,
         contact,
         description,
         type: 'LOST'
@@ -502,7 +534,7 @@ async function handleReportLost(e) {
 
     updateDashboardStats();
     populateMatchLostSelector();
-    showToast(`Lost item notice "${name}" logged successfully! (ID: ${id})`);
+    showToast(`Lost notice for "${name}" registered for Reg No: ${regNo}! (ID: ${id})`);
     resetForm('lost-form');
     navigateTo('dashboard');
 }
@@ -515,9 +547,13 @@ async function handleReportFound(e) {
 
     const name = document.getElementById('found-name').value.trim();
     const category = document.getElementById('found-category').value;
-    const location = document.getElementById('found-location').value.trim();
+    const locSelect = document.getElementById('found-location-select').value;
+    const specificSpot = document.getElementById('found-specific-spot').value.trim();
+    const location = specificSpot ? `${locSelect} (${specificSpot})` : locSelect;
+
     const date = document.getElementById('found-date').value;
     const reporterName = document.getElementById('found-reporter').value.trim();
+    const regNo = document.getElementById('found-regno').value.trim();
     const contact = document.getElementById('found-contact').value.trim();
     const description = document.getElementById('found-description').value.trim();
 
@@ -532,6 +568,7 @@ async function handleReportFound(e) {
         location,
         date,
         reporterName,
+        regNo,
         contact,
         description,
         type: 'FOUND'
@@ -563,14 +600,11 @@ async function handleReportFound(e) {
 
     updateDashboardStats();
     populateMatchLostSelector();
-    showToast(`Found item record "${name}" registered successfully! (ID: ${id})`);
+    showToast(`Found item "${name}" at ${locSelect} logged successfully! (ID: ${id})`);
     resetForm('found-form');
     navigateTo('dashboard');
 }
 
-/**
- * Reset form fields
- */
 function resetForm(formId) {
     const form = document.getElementById(formId);
     if (form) {
@@ -581,9 +615,6 @@ function resetForm(formId) {
     }
 }
 
-/**
- * Populate dropdown in Match Engine to focus on a particular lost item
- */
 function populateMatchLostSelector() {
     const select = document.getElementById('match-lost-selector');
     if (!select) return;
@@ -595,7 +626,7 @@ function populateMatchLostSelector() {
 
     for (const lost of lostItems) {
         const count = state.matches.filter(m => m.lostItem.id === lost.id).length;
-        options.push(`<option value="${lost.id}">${lost.id} - ${escapeHtml(lost.name)} (${count} matches)</option>`);
+        options.push(`<option value="${lost.id}">${lost.id} - ${escapeHtml(lost.name)} [Reg: ${escapeHtml(lost.regNo || 'N/A')}] (${count} matches)</option>`);
     }
 
     select.innerHTML = options.join('');
@@ -614,12 +645,12 @@ function loadMatches() {
     if (state.isBackendOnline) {
         loadBackendMatches().then(() => {
             renderMatches();
-            showToast('Match calculations updated from server.');
+            showToast('MUJ match engine calculations refreshed.');
         });
     } else {
         recalculateLocalMatches();
         renderMatches();
-        showToast('Match algorithm re-evaluated across all records.');
+        showToast('Local match evaluation refreshed.');
     }
 }
 
@@ -678,11 +709,7 @@ function renderMatches() {
                         <h4 class="compare-box-title">${escapeHtml(m.lostItem.name)}</h4>
                         <div class="compare-meta-grid">
                             <div class="compare-meta-item">
-                                <span class="compare-meta-label">Category</span>
-                                <span class="compare-meta-value">${escapeHtml(m.lostItem.category)}</span>
-                            </div>
-                            <div class="compare-meta-item">
-                                <span class="compare-meta-label">Location</span>
+                                <span class="compare-meta-label">MUJ Location</span>
                                 <span class="compare-meta-value">${escapeHtml(m.lostItem.location)}</span>
                             </div>
                             <div class="compare-meta-item">
@@ -690,8 +717,12 @@ function renderMatches() {
                                 <span class="compare-meta-value">${m.lostItem.date}</span>
                             </div>
                             <div class="compare-meta-item">
-                                <span class="compare-meta-label">Owner</span>
+                                <span class="compare-meta-label">Student Name</span>
                                 <span class="compare-meta-value">${escapeHtml(m.lostItem.reporterName)}</span>
+                            </div>
+                            <div class="compare-meta-item">
+                                <span class="compare-meta-label">Reg No.</span>
+                                <span class="compare-meta-value" style="color: var(--orange-primary);">${escapeHtml(m.lostItem.regNo || 'N/A')}</span>
                             </div>
                         </div>
                         <div class="compare-desc">
@@ -708,11 +739,7 @@ function renderMatches() {
                         <h4 class="compare-box-title">${escapeHtml(m.foundItem.name)}</h4>
                         <div class="compare-meta-grid">
                             <div class="compare-meta-item">
-                                <span class="compare-meta-label">Category</span>
-                                <span class="compare-meta-value">${escapeHtml(m.foundItem.category)}</span>
-                            </div>
-                            <div class="compare-meta-item">
-                                <span class="compare-meta-label">Location</span>
+                                <span class="compare-meta-label">MUJ Location</span>
                                 <span class="compare-meta-value">${escapeHtml(m.foundItem.location)}</span>
                             </div>
                             <div class="compare-meta-item">
@@ -720,8 +747,12 @@ function renderMatches() {
                                 <span class="compare-meta-value">${m.foundItem.date}</span>
                             </div>
                             <div class="compare-meta-item">
-                                <span class="compare-meta-label">Finder</span>
+                                <span class="compare-meta-label">Finder Name</span>
                                 <span class="compare-meta-value">${escapeHtml(m.foundItem.reporterName)}</span>
+                            </div>
+                            <div class="compare-meta-item">
+                                <span class="compare-meta-label">Finder ID / Reg</span>
+                                <span class="compare-meta-value" style="color: var(--navy-primary);">${escapeHtml(m.foundItem.regNo || 'Staff')}</span>
                             </div>
                         </div>
                         <div class="compare-desc">
@@ -737,8 +768,8 @@ function renderMatches() {
                             ${(m.foundItem.reporterName || 'F').charAt(0).toUpperCase()}
                         </div>
                         <div>
-                            <div class="founder-title">Found Reporter Contact Details</div>
-                            <div class="founder-name">${escapeHtml(m.foundItem.reporterName)}</div>
+                            <div class="founder-title">Found Reporter Contact / Custody Details</div>
+                            <div class="founder-name">${escapeHtml(m.foundItem.reporterName)} (Reg/ID: ${escapeHtml(m.foundItem.regNo || 'Staff')})</div>
                             <div class="founder-contact-detail">${escapeHtml(m.foundItem.contact)}</div>
                         </div>
                     </div>
@@ -754,9 +785,6 @@ function renderMatches() {
     }).join('');
 }
 
-/**
- * Copy contact information to clipboard
- */
 function copyContact(contact) {
     if (navigator.clipboard) {
         navigator.clipboard.writeText(contact).then(() => {
@@ -781,6 +809,7 @@ function openItemModal(itemId) {
     const cat = document.getElementById('modal-item-category');
     const loc = document.getElementById('modal-item-location');
     const date = document.getElementById('modal-item-date');
+    const regno = document.getElementById('modal-item-regno');
     const desc = document.getElementById('modal-item-description');
     const rep = document.getElementById('modal-item-reporter');
     const contact = document.getElementById('modal-item-contact');
@@ -792,6 +821,7 @@ function openItemModal(itemId) {
     cat.textContent = item.category;
     loc.textContent = item.location;
     date.textContent = item.date;
+    if (regno) regno.textContent = item.regNo || 'Not specified';
     desc.textContent = item.description;
     rep.textContent = item.reporterName;
     contact.textContent = item.contact;

@@ -51,24 +51,26 @@ public class AppContextListener implements ServletContextListener {
                 System.out.println("[AppContextListener] No saved records in " + storagePath + ". Initializing sample data.");
                 Item lostSample = new LostItem(
                         "L101",
-                        "Black Wallet",
-                        "Accessories",
-                        "Black leather wallet with student ID and transit pass",
+                        "Black Leather Wallet",
+                        "Wallets & Bags",
+                        "Black leather wallet with MUJ student ID and transit pass",
                         "Library",
                         LocalDate.now(),
-                        "Student A",
-                        "studentA@example.com"
+                        "Aryan Sharma",
+                        "aryan.229301045@muj.manipal.edu",
+                        "229301045"
                 );
 
                 Item foundSample = new FoundItem(
                         "F101",
-                        "Black Wallet",
-                        "Accessories",
+                        "Black Leather Wallet",
+                        "Wallets & Bags",
                         "Black wallet near reading desk on 2nd floor",
                         "Library",
                         LocalDate.now(),
-                        "Student B",
-                        "studentB@example.com"
+                        "Kavita Rao",
+                        "kavita.229301128@muj.manipal.edu",
+                        "229301128"
                 );
 
                 manager.addItem(lostSample);

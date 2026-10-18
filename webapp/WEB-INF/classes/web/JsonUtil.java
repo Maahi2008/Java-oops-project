@@ -65,6 +65,7 @@ public class JsonUtil {
                 + "\"location\":\"" + escape(item.getLocation()) + "\","
                 + "\"date\":\"" + (item.getDate() != null ? item.getDate().toString() : "") + "\","
                 + "\"reporterName\":\"" + escape(item.getReporterName()) + "\","
+                + "\"regNo\":\"" + escape(item.getRegNo()) + "\","
                 + "\"contact\":\"" + escape(item.getContact()) + "\","
                 + "\"type\":\"" + escape(item.getType()) + "\""
                 + "}";

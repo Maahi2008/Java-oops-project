@@ -16,11 +16,21 @@ public abstract class Item implements Serializable {
     private LocalDate date;
     private String reporterName;
     private String contact;
+    private String regNo;
 
     public Item(String id, String name, String category,
                 String description, String location,
                 LocalDate date, String reporterName,
                 String contact) {
+
+        this(id, name, category, description, location,
+             date, reporterName, contact, "");
+    }
+
+    public Item(String id, String name, String category,
+                String description, String location,
+                LocalDate date, String reporterName,
+                String contact, String regNo) {
 
         this.id = id;
         this.name = name;
@@ -30,6 +40,7 @@ public abstract class Item implements Serializable {
         this.date = date;
         this.reporterName = reporterName;
         this.contact = contact;
+        this.regNo = regNo != null ? regNo : "";
     }
 
     public abstract String getType();
@@ -66,10 +77,15 @@ public abstract class Item implements Serializable {
         return contact;
     }
 
+    public String getRegNo() {
+        return regNo != null ? regNo : "";
+    }
+
     @Override
     public String toString() {
         return getType() + " | " + id + " | " + name
                 + " | " + category + " | " + location
-                + " | " + date;
+                + " | " + date
+                + (regNo != null && !regNo.isEmpty() ? " | Reg: " + regNo : "");
     }
 }

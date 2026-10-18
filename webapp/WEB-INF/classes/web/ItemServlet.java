@@ -113,6 +113,7 @@ public class ItemServlet extends HttpServlet {
         String dateStr = getField(req, body, "date");
         String reporterName = getField(req, body, "reporterName");
         String contact = getField(req, body, "contact");
+        String regNo = getField(req, body, "regNo");
 
         LocalDate date;
         try {
@@ -133,13 +134,13 @@ public class ItemServlet extends HttpServlet {
                     long count = manager.getAllItems().stream().filter(i -> "FOUND".equalsIgnoreCase(i.getType())).count();
                     id = "F" + (101 + count);
                 }
-                newItem = new FoundItem(id, name, category, description, location, date, reporterName, contact);
+                newItem = new FoundItem(id, name, category, description, location, date, reporterName, contact, regNo);
             } else {
                 if (id == null || id.isEmpty()) {
                     long count = manager.getAllItems().stream().filter(i -> "LOST".equalsIgnoreCase(i.getType())).count();
                     id = "L" + (101 + count);
                 }
-                newItem = new LostItem(id, name, category, description, location, date, reporterName, contact);
+                newItem = new LostItem(id, name, category, description, location, date, reporterName, contact, regNo);
             }
 
             manager.addItem(newItem);
