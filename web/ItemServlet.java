@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-@WebServlet(name = "ItemServlet", urlPatterns = {"/api/items", "/api/items/lost", "/api/items/found"})
+@WebServlet(name = "ItemServlet", urlPatterns = {"/api/items", "/api/items/lost", "/api/items/found", "/api/items/claim", "/api/items/delete"})
 public class ItemServlet extends HttpServlet {
 
     @Override
@@ -39,6 +39,7 @@ public class ItemServlet extends HttpServlet {
         String category = req.getParameter("category");
         String location = req.getParameter("location");
         String type = req.getParameter("type");
+        String status = req.getParameter("status"); // "ACTIVE", "CLAIMED", or null (all)
 
         ArrayList<Item> results;
         if (name != null && !name.trim().isEmpty() && searchService != null) {
@@ -69,6 +70,11 @@ public class ItemServlet extends HttpServlet {
                     continue;
                 }
             }
+            if (status != null && !status.trim().isEmpty() && !"ALL".equalsIgnoreCase(status.trim())) {
+                if (!item.getStatus().equalsIgnoreCase(status.trim())) {
+                    continue;
+                }
+            }
             filtered.add(item);
         }
 
@@ -91,7 +97,6 @@ public class ItemServlet extends HttpServlet {
             return;
         }
 
-        // Check if body is JSON
         String body = "";
         String contentType = req.getContentType();
         if (contentType != null && contentType.contains("application/json")) {
@@ -105,6 +110,67 @@ public class ItemServlet extends HttpServlet {
             body = sb.toString();
         }
 
+        String path = req.getServletPath();
+        if (req.getPathInfo() != null) {
+            path += req.getPathInfo();
+        }
+
+        PrintWriter out = resp.getWriter();
+
+        // 1. Handle Claim Request
+        if (path != null && path.contains("/claim")) {
+            String itemId = getField(req, body, "id");
+            String claimant = getField(req, body, "claimedBy");
+            if (claimant == null || claimant.isEmpty()) {
+                claimant = getField(req, body, "regNo");
+            }
+
+            Item item = manager.findById(itemId);
+            if (item != null) {
+                synchronized (manager) {
+                    item.markClaimed(claimant, LocalDate.now().toString());
+                    try {
+                        repository.saveItems(manager.getAllItems());
+                    } catch (Exception e) {
+                        System.err.println("[ItemServlet] Error saving items.dat: " + e.getMessage());
+                    }
+                }
+                resp.setStatus(HttpServletResponse.SC_OK);
+                out.write(JsonUtil.itemToJson(item));
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.write("{\"error\":\"Item not found\"}");
+            }
+            out.flush();
+            return;
+        }
+
+        // 2. Handle Delete Request (for MUJ Security Admin)
+        if (path != null && path.contains("/delete")) {
+            String itemId = getField(req, body, "id");
+            boolean removed;
+            synchronized (manager) {
+                removed = manager.removeItem(itemId);
+                if (removed) {
+                    try {
+                        repository.saveItems(manager.getAllItems());
+                    } catch (Exception e) {
+                        System.err.println("[ItemServlet] Error saving items.dat: " + e.getMessage());
+                    }
+                }
+            }
+            if (removed) {
+                resp.setStatus(HttpServletResponse.SC_OK);
+                out.write("{\"success\":true,\"id\":\"" + JsonUtil.escape(itemId) + "\"}");
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.write("{\"error\":\"Item not found\"}");
+            }
+            out.flush();
+            return;
+        }
+
+        // 3. Handle Lost / Found Submissions
         String id = getField(req, body, "id");
         String name = getField(req, body, "name");
         String category = getField(req, body, "category");
@@ -114,17 +180,13 @@ public class ItemServlet extends HttpServlet {
         String reporterName = getField(req, body, "reporterName");
         String contact = getField(req, body, "contact");
         String regNo = getField(req, body, "regNo");
+        String imageUrl = getField(req, body, "imageUrl");
 
         LocalDate date;
         try {
             date = (dateStr != null && !dateStr.isEmpty()) ? LocalDate.parse(dateStr) : LocalDate.now();
         } catch (Exception e) {
             date = LocalDate.now();
-        }
-
-        String path = req.getServletPath();
-        if (req.getPathInfo() != null) {
-            path += req.getPathInfo();
         }
 
         Item newItem;
@@ -134,13 +196,13 @@ public class ItemServlet extends HttpServlet {
                     long count = manager.getAllItems().stream().filter(i -> "FOUND".equalsIgnoreCase(i.getType())).count();
                     id = "F" + (101 + count);
                 }
-                newItem = new FoundItem(id, name, category, description, location, date, reporterName, contact, regNo);
+                newItem = new FoundItem(id, name, category, description, location, date, reporterName, contact, regNo, "ACTIVE", imageUrl);
             } else {
                 if (id == null || id.isEmpty()) {
                     long count = manager.getAllItems().stream().filter(i -> "LOST".equalsIgnoreCase(i.getType())).count();
                     id = "L" + (101 + count);
                 }
-                newItem = new LostItem(id, name, category, description, location, date, reporterName, contact, regNo);
+                newItem = new LostItem(id, name, category, description, location, date, reporterName, contact, regNo, "ACTIVE", imageUrl);
             }
 
             manager.addItem(newItem);
@@ -154,7 +216,6 @@ public class ItemServlet extends HttpServlet {
         }
 
         resp.setStatus(HttpServletResponse.SC_CREATED);
-        PrintWriter out = resp.getWriter();
         out.write(JsonUtil.itemToJson(newItem));
         out.flush();
     }

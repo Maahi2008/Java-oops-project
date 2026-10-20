@@ -34,6 +34,17 @@
         <url-pattern>/api/items</url-pattern>
         <url-pattern>/api/items/lost</url-pattern>
         <url-pattern>/api/items/found</url-pattern>
+        <url-pattern>/api/items/claim</url-pattern>
+        <url-pattern>/api/items/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AnalyticsServlet</servlet-name>
+        <servlet-class>web.AnalyticsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AnalyticsServlet</servlet-name>
+        <url-pattern>/api/analytics</url-pattern>
     </servlet-mapping>
 
     <servlet>

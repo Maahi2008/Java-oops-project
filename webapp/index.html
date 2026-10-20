@@ -41,6 +41,14 @@
                     <span>Match Engine</span>
                     <span class="nav-badge" id="nav-match-count">0</span>
                 </button>
+                <button class="nav-link" data-view="analytics" onclick="navigateTo('analytics')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    <span>Analytics</span>
+                </button>
+                <button class="nav-link" data-view="admin" onclick="navigateTo('admin')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Security Desk</span>
+                </button>
             </nav>
 
             <div class="nav-actions">
@@ -48,7 +56,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     <span>Report Lost</span>
                 </button>
-                <button class="btn btn-orange" onclick="navigateTo('report-found')">
+                <button class="btn btn-blue" onclick="navigateTo('report-found')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                     <span>Report Found</span>
                 </button>
@@ -72,7 +80,7 @@
                         Automated, rule-based lost-and-found matching designed for students and faculty of Manipal University Jaipur. Real-time pairing across <strong>Library, AB1, AB2, AB3, LHC</strong>, Food Court, and Hostels with Student Registration Number verification.
                     </p>
                     <div class="hero-cta-group">
-                        <button class="btn btn-orange btn-lg" onclick="navigateTo('report-lost')">Report Lost Item</button>
+                        <button class="btn btn-blue btn-lg" onclick="navigateTo('report-lost')">Report Lost Item</button>
                         <button class="btn btn-navy btn-lg" onclick="navigateTo('report-found')">Report Found Item</button>
                         <button class="btn btn-outline btn-lg" onclick="navigateTo('matches')">View Potential Matches</button>
                     </div>
@@ -142,6 +150,21 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
                 </div>
+
+                <!-- Resolved / Claimed Stat -->
+                <div class="stat-card stat-claimed" onclick="filterBrowseByStatus('CLAIMED')">
+                    <div class="stat-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Resolved &amp; Reunited</span>
+                        <div class="stat-number" id="stat-claimed-count">0</div>
+                        <span class="stat-subtext">Successfully returned to owner</span>
+                    </div>
+                    <div class="stat-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
             </div>
 
             <!-- Match Spotlight & Recent Records -->
@@ -150,7 +173,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title-group">
-                            <span class="panel-badge-orange">High Confidence</span>
+                            <span class="panel-badge-blue">High Confidence</span>
                             <h2 class="panel-title">Top Match Suggestions</h2>
                         </div>
                         <button class="btn-link" onclick="navigateTo('matches')">View All &rarr;</button>
@@ -229,6 +252,15 @@
                             <option value="Sports Complex">Sports Complex</option>
                             <option value="Campus Quad">Grand Shanti / Campus Quad</option>
                             <option value="Other">Other Campus Area</option>
+                        </select>
+                    </div>
+
+                    <div class="select-group">
+                        <label for="status-filter">Status</label>
+                        <select id="status-filter" onchange="handleSearchChange()">
+                            <option value="">All Records</option>
+                            <option value="ACTIVE" selected>Active Only</option>
+                            <option value="CLAIMED">Resolved / Claimed</option>
                         </select>
                     </div>
 
@@ -343,11 +375,31 @@
                             <label for="lost-description">Item Description &amp; Distinctive Features <span class="required">*</span></label>
                             <textarea id="lost-description" rows="4" required placeholder="Provide color, brand, stickers, cards inside, scratches, or unique marks for Jaccard similarity scoring..."></textarea>
                         </div>
+
+                        <div class="form-field full-width">
+                            <label>Item Photograph (Optional)</label>
+                            <div class="image-upload-wrapper">
+                                <div class="image-upload-dropzone" onclick="document.getElementById('lost-image-input').click()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    <div class="image-upload-text">Upload or Drop Photo of Lost Item</div>
+                                    <div class="image-upload-subtext">Supports PNG, JPG, WEBP (stored in local database)</div>
+                                    <input type="file" id="lost-image-input" accept="image/*" style="display:none;" onchange="handleImageSelected(event, 'lost')">
+                                </div>
+                                <div id="lost-image-preview" class="image-preview-container" style="display:none;">
+                                    <img id="lost-image-thumb" class="image-preview-thumb" src="" alt="Lost Item Preview">
+                                    <div class="image-preview-info">
+                                        <div id="lost-image-name" class="image-preview-name"></div>
+                                        <div id="lost-image-size" class="image-preview-size"></div>
+                                    </div>
+                                    <button type="button" class="btn-remove-image" onclick="clearSelectedImage('lost')">Remove Photo</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
                         <button type="button" class="btn btn-outline" onclick="resetForm('lost-form')">Clear Form</button>
-                        <button type="submit" class="btn btn-orange btn-lg">
+                        <button type="submit" class="btn btn-blue btn-lg">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                             <span>Submit Lost Item Report</span>
                         </button>
@@ -440,6 +492,26 @@
                             <label for="found-description">Item Description &amp; Condition Details <span class="required">*</span></label>
                             <textarea id="found-description" rows="4" required placeholder="Describe appearance, color, brand, condition, and where the item is kept for safe pickup..."></textarea>
                         </div>
+
+                        <div class="form-field full-width">
+                            <label>Item Photograph (Optional)</label>
+                            <div class="image-upload-wrapper">
+                                <div class="image-upload-dropzone" onclick="document.getElementById('found-image-input').click()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    <div class="image-upload-text">Upload or Drop Photo of Found Item</div>
+                                    <div class="image-upload-subtext">Supports PNG, JPG, WEBP (stored in local database)</div>
+                                    <input type="file" id="found-image-input" accept="image/*" style="display:none;" onchange="handleImageSelected(event, 'found')">
+                                </div>
+                                <div id="found-image-preview" class="image-preview-container" style="display:none;">
+                                    <img id="found-image-thumb" class="image-preview-thumb" src="" alt="Found Item Preview">
+                                    <div class="image-preview-info">
+                                        <div id="found-image-name" class="image-preview-name"></div>
+                                        <div id="found-image-size" class="image-preview-size"></div>
+                                    </div>
+                                    <button type="button" class="btn-remove-image" onclick="clearSelectedImage('found')">Remove Photo</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-actions">
@@ -500,9 +572,147 @@
                 <h3>No Matches Detected Currently</h3>
                 <p>No pairs currently score &ge; 30% similarity. When new reports are submitted, compatibility is automatically recomputed.</p>
                 <div class="empty-state-actions">
-                    <button class="btn btn-orange" onclick="navigateTo('report-lost')">Report Lost Item</button>
+                    <button class="btn btn-blue" onclick="navigateTo('report-lost')">Report Lost Item</button>
                     <button class="btn btn-navy" onclick="navigateTo('report-found')">Report Found Item</button>
                 </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 6: ANALYTICS & RECOVERY METRICS                          -->
+        <!-- ============================================================== -->
+        <section id="analytics-view" class="view-section">
+            <div class="section-header">
+                <div>
+                    <div class="engine-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        <span>MUJ Campus Insights</span>
+                    </div>
+                    <h1 class="section-title">Campus Lost &amp; Found Analytics</h1>
+                    <p class="section-subtitle">Real-time statistics on item loss hotspots, categories, and campus resolution rate.</p>
+                </div>
+                <div class="section-header-actions">
+                    <button class="btn btn-outline" onclick="loadAnalyticsData()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        <span>Refresh Data</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="analytics-kpi-grid">
+                <div class="analytics-kpi-card">
+                    <div class="kpi-label">Total Items Logged</div>
+                    <div class="kpi-value" id="kpi-total-items">0</div>
+                    <div class="kpi-subtext">All time records across MUJ</div>
+                </div>
+                <div class="analytics-kpi-card kpi-amber">
+                    <div class="kpi-label">Active Open Cases</div>
+                    <div class="kpi-value" id="kpi-active-items">0</div>
+                    <div class="kpi-subtext">Currently pending recovery</div>
+                </div>
+                <div class="analytics-kpi-card kpi-success">
+                    <div class="kpi-label">Resolved &amp; Reunited</div>
+                    <div class="kpi-value" id="kpi-claimed-items">0</div>
+                    <div class="kpi-subtext">Successfully returned to owners</div>
+                </div>
+                <div class="analytics-kpi-card">
+                    <div class="kpi-label">Campus Recovery Rate</div>
+                    <div class="kpi-value" id="kpi-recovery-rate">0%</div>
+                    <div class="kpi-subtext">Resolution efficiency</div>
+                </div>
+            </div>
+
+            <!-- Visual Charts -->
+            <div class="analytics-charts-grid">
+                <!-- Location Distribution (Bar Chart) -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <div class="chart-title">MUJ Location Hotspots</div>
+                            <div class="chart-subtitle">Item volume by campus building / zone</div>
+                        </div>
+                    </div>
+                    <div id="location-chart-container" style="min-height: 280px; display:flex; align-items:flex-end;">
+                        <!-- Rendered via SVG in app.js -->
+                    </div>
+                </div>
+
+                <!-- Category Breakdown -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <div class="chart-title">Category Breakdown</div>
+                            <div class="chart-subtitle">Distribution of belongings lost/found</div>
+                        </div>
+                    </div>
+                    <div id="category-chart-container" class="category-list-breakdown">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- VIEW 7: SECURITY DESK / ADMIN PANEL                           -->
+        <!-- ============================================================== -->
+        <section id="admin-view" class="view-section">
+            <div class="section-header">
+                <div>
+                    <div class="engine-badge" style="background:#f1f5f9;color:var(--navy-dark);border-color:#cbd5e1;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>MUJ Campus Security &amp; Custody Desk</span>
+                    </div>
+                    <h1 class="section-title">Campus Custody Management</h1>
+                    <p class="section-subtitle">Manage safe custody inventory, verify student ownership, and export official audit reports.</p>
+                </div>
+                <div class="section-header-actions">
+                    <button class="btn btn-blue" onclick="exportCustodyCSV()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <span>Export Custody Report (CSV)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Toolbar -->
+            <div class="admin-toolbar">
+                <div class="admin-filter-group">
+                    <label style="font-weight:600;font-size:0.85rem;color:var(--navy-secondary);">Filter:</label>
+                    <div class="pill-tabs">
+                        <button class="pill-tab active" data-admin-status="" onclick="setAdminStatusFilter('')">All Records</button>
+                        <button class="pill-tab" data-admin-status="ACTIVE" onclick="setAdminStatusFilter('ACTIVE')">Active in Custody</button>
+                        <button class="pill-tab" data-admin-status="CLAIMED" onclick="setAdminStatusFilter('CLAIMED')">Claimed / Returned</button>
+                    </div>
+                </div>
+
+                <div class="admin-filter-group">
+                    <input type="text" id="admin-search-box" class="admin-search-input" placeholder="Search ID, student Reg No, or item..." oninput="handleAdminSearch()">
+                </div>
+            </div>
+
+            <!-- Custody Table -->
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Type</th>
+                            <th>Item Title</th>
+                            <th>Category</th>
+                            <th>MUJ Location</th>
+                            <th>Reg / Staff ID</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="admin-empty-placeholder" class="empty-state" style="display:none;">
+                <p>No records match your admin filter.</p>
             </div>
         </section>
     </main>
@@ -511,10 +721,18 @@
     <div id="item-modal" class="modal-overlay" onclick="closeItemModal(event)">
         <div class="modal-dialog" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <div id="modal-type-badge" class="badge"></div>
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                    <div id="modal-type-badge" class="badge"></div>
+                    <div id="modal-status-badge" class="badge-status"></div>
+                </div>
                 <button class="modal-close-btn" onclick="closeItemModal()">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Optional Photo View -->
+                <div id="modal-image-container" class="modal-item-image-box" style="display: none;">
+                    <img id="modal-item-image" src="" alt="Item Photo">
+                </div>
+
                 <h2 id="modal-item-name" class="modal-title"></h2>
                 <div class="modal-meta-grid">
                     <div class="modal-meta-item">
@@ -535,7 +753,7 @@
                     </div>
                     <div class="modal-meta-item" style="grid-column: 1 / -1;">
                         <span class="modal-meta-label">Registration Number</span>
-                        <span id="modal-item-regno" class="modal-meta-value" style="color: var(--orange-primary);"></span>
+                        <span id="modal-item-regno" class="modal-meta-value" style="color: var(--blue-primary);"></span>
                     </div>
                 </div>
 
@@ -557,9 +775,69 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="modal-claim-banner" class="item-claimed-banner" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span id="modal-claim-text">Claimed and resolved</span>
+                </div>
             </div>
             <div class="modal-footer">
+                <button id="modal-claim-action-btn" class="btn btn-blue" onclick="openClaimModalFromCurrent()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Mark as Claimed / Returned</span>
+                </button>
                 <button class="btn btn-navy" onclick="closeItemModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Marking Item Claimed -->
+    <div id="claim-modal" class="modal-overlay" onclick="closeClaimModal(event)">
+        <div class="modal-dialog" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="badge badge-found" style="background:#ecfdf5;color:#047857;border-color:#a7f3d0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Claim &amp; Return Verification</span>
+                </div>
+                <button class="modal-close-btn" onclick="closeClaimModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h2 class="modal-title">Verify Ownership &amp; Return Item</h2>
+                <p style="font-size: 0.88rem; color: var(--navy-secondary); margin-bottom: 1.25rem;">
+                    Confirm student/faculty identity before handing over item custody. Once marked claimed, this record is updated across the campus directory.
+                </p>
+
+                <div style="background:var(--blue-light);border:1px solid var(--blue-border);border-radius:var(--radius-sm);padding:0.75rem 1rem;margin-bottom:1.25rem;">
+                    <div style="font-size:0.72rem;font-weight:700;color:var(--blue-primary);text-transform:uppercase;">Item Under Verification</div>
+                    <div id="claim-item-title" style="font-weight:700;color:var(--navy-dark);font-size:1.05rem;margin-top:0.2rem;"></div>
+                    <div id="claim-item-meta" style="font-size:0.8rem;color:var(--navy-secondary);margin-top:0.2rem;"></div>
+                </div>
+
+                <form id="claim-form" onsubmit="submitItemClaim(event)">
+                    <input type="hidden" id="claim-item-id">
+                    <div class="form-field full-width" style="margin-bottom:1rem;">
+                        <label for="claimant-regno">Claimant MUJ Registration Number <span class="required">*</span></label>
+                        <input type="text" id="claimant-regno" required placeholder="e.g. 229301045" pattern="[A-Za-z0-9\-]+" style="padding:0.6rem 0.8rem;width:100%;border:1px solid var(--border-light);border-radius:var(--radius-sm);font-family:inherit;">
+                        <span class="field-hint">Official Student Reg No. or Faculty/Staff ID of the claimant.</span>
+                    </div>
+                    <div class="form-field full-width" style="margin-bottom:1.25rem;">
+                        <label for="claimant-name">Claimant Full Name (Optional)</label>
+                        <input type="text" id="claimant-name" placeholder="e.g. Aryan Sharma" style="padding:0.6rem 0.8rem;width:100%;border:1px solid var(--border-light);border-radius:var(--radius-sm);font-family:inherit;">
+                    </div>
+                    <div class="form-field full-width" style="margin-bottom:1.5rem;">
+                        <label style="display:flex;align-items:center;gap:0.5rem;font-weight:600;font-size:0.85rem;cursor:pointer;">
+                            <input type="checkbox" id="claim-verified-checkbox" required style="width:16px;height:16px;accent-color:var(--blue-primary);">
+                            <span>I confirm that identity / student card verification was completed.</span>
+                        </label>
+                    </div>
+                    <div class="modal-footer" style="padding:0;border:none;">
+                        <button type="button" class="btn btn-outline" onclick="closeClaimModal()">Cancel</button>
+                        <button type="submit" class="btn btn-blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Confirm &amp; Complete Return</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

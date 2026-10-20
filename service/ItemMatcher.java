@@ -1,4 +1,3 @@
-
 package service;
 
 import model.Item;
@@ -17,13 +16,13 @@ public class ItemMatcher {
 
         ArrayList<MatchResult> results = new ArrayList<>();
 
-        if (!lostItem.getType().equals("LOST")) {
+        if (!lostItem.getType().equals("LOST") || "CLAIMED".equalsIgnoreCase(lostItem.getStatus())) {
             return results;
         }
 
         for (Item candidate : allItems) {
 
-            if (!candidate.getType().equals("FOUND")) {
+            if (!candidate.getType().equals("FOUND") || "CLAIMED".equalsIgnoreCase(candidate.getStatus())) {
                 continue;
             }
 

@@ -1,6 +1,6 @@
-
 package service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import model.Item;
 
@@ -17,6 +17,38 @@ public class ItemManager {
     // Return all items
     public ArrayList<Item> getAllItems() {
         return new ArrayList<>(items);
+    }
+
+    // Return active (unclaimed) items
+    public ArrayList<Item> getActiveItems() {
+        ArrayList<Item> active = new ArrayList<>();
+        for (Item item : items) {
+            if ("ACTIVE".equalsIgnoreCase(item.getStatus())) {
+                active.add(item);
+            }
+        }
+        return active;
+    }
+
+    // Return claimed/resolved items
+    public ArrayList<Item> getClaimedItems() {
+        ArrayList<Item> claimed = new ArrayList<>();
+        for (Item item : items) {
+            if ("CLAIMED".equalsIgnoreCase(item.getStatus())) {
+                claimed.add(item);
+            }
+        }
+        return claimed;
+    }
+
+    // Mark an item as claimed
+    public boolean markAsClaimed(String id, String claimant) {
+        Item item = findById(id);
+        if (item != null) {
+            item.markClaimed(claimant, LocalDate.now().toString());
+            return true;
+        }
+        return false;
     }
 
     // Display all items

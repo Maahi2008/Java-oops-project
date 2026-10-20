@@ -67,7 +67,11 @@ public class JsonUtil {
                 + "\"reporterName\":\"" + escape(item.getReporterName()) + "\","
                 + "\"regNo\":\"" + escape(item.getRegNo()) + "\","
                 + "\"contact\":\"" + escape(item.getContact()) + "\","
-                + "\"type\":\"" + escape(item.getType()) + "\""
+                + "\"type\":\"" + escape(item.getType()) + "\","
+                + "\"status\":\"" + escape(item.getStatus()) + "\","
+                + "\"imageUrl\":\"" + escape(item.getImageUrl()) + "\","
+                + "\"claimedBy\":\"" + escape(item.getClaimedBy()) + "\","
+                + "\"claimDate\":\"" + escape(item.getClaimDate()) + "\""
                 + "}";
     }
 
@@ -114,26 +118,59 @@ public class JsonUtil {
         return sb.toString();
     }
 
-    public static String dashboardToJson(int lostCount, int foundCount, int matchCount, int totalCount) {
+    public static String dashboardToJson(int lostCount, int foundCount, int matchCount, int totalCount, int claimedCount) {
         return "{"
                 + "\"lostCount\":" + lostCount + ","
                 + "\"foundCount\":" + foundCount + ","
                 + "\"matchCount\":" + matchCount + ","
-                + "\"totalCount\":" + totalCount
+                + "\"totalCount\":" + totalCount + ","
+                + "\"claimedCount\":" + claimedCount
                 + "}";
+    }
+
+    public static String dashboardToJson(int lostCount, int foundCount, int matchCount, int totalCount) {
+        return dashboardToJson(lostCount, foundCount, matchCount, totalCount, 0);
     }
 
     public static String extractJsonField(String json, String field) {
         if (json == null || json.isEmpty()) {
             return "";
         }
-        // Match "field"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"
-        Pattern p = Pattern.compile("\"" + Pattern.quote(field) + "\"\\s*:\\s*\"((?:\\\\.|[^\"\\\\])*)\"");
-        Matcher m = p.matcher(json);
-        if (m.find()) {
-            return unescape(m.group(1));
+        String key = "\"" + field + "\"";
+        int keyIdx = json.indexOf(key);
+        if (keyIdx == -1) {
+            return "";
         }
-        return "";
+        int colonIdx = json.indexOf(':', keyIdx + key.length());
+        if (colonIdx == -1) {
+            return "";
+        }
+        int quoteStart = json.indexOf('"', colonIdx + 1);
+        if (quoteStart == -1) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean escape = false;
+        for (int i = quoteStart + 1; i < json.length(); i++) {
+            char c = json.charAt(i);
+            if (escape) {
+                if (c == '"') sb.append('"');
+                else if (c == '\\') sb.append('\\');
+                else if (c == 'n') sb.append('\n');
+                else if (c == 'r') sb.append('\r');
+                else if (c == 't') sb.append('\t');
+                else if (c == '/') sb.append('/');
+                else sb.append(c);
+                escape = false;
+            } else if (c == '\\') {
+                escape = true;
+            } else if (c == '"') {
+                return sb.toString();
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     private static String unescape(String s) {

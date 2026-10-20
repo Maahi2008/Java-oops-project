@@ -1,4 +1,3 @@
-
 package model;
 
 import java.io.Serializable;
@@ -17,6 +16,10 @@ public abstract class Item implements Serializable {
     private String reporterName;
     private String contact;
     private String regNo;
+    private String status;    // "ACTIVE" or "CLAIMED"
+    private String imageUrl;  // Optional image URL or base64 data
+    private String claimedBy; // Registration number or name of claimant
+    private String claimDate; // Date when claim was verified
 
     public Item(String id, String name, String category,
                 String description, String location,
@@ -24,13 +27,23 @@ public abstract class Item implements Serializable {
                 String contact) {
 
         this(id, name, category, description, location,
-             date, reporterName, contact, "");
+             date, reporterName, contact, "", "ACTIVE", "");
     }
 
     public Item(String id, String name, String category,
                 String description, String location,
                 LocalDate date, String reporterName,
                 String contact, String regNo) {
+
+        this(id, name, category, description, location,
+             date, reporterName, contact, regNo, "ACTIVE", "");
+    }
+
+    public Item(String id, String name, String category,
+                String description, String location,
+                LocalDate date, String reporterName,
+                String contact, String regNo,
+                String status, String imageUrl) {
 
         this.id = id;
         this.name = name;
@@ -41,6 +54,10 @@ public abstract class Item implements Serializable {
         this.reporterName = reporterName;
         this.contact = contact;
         this.regNo = regNo != null ? regNo : "";
+        this.status = (status != null && !status.isEmpty()) ? status : "ACTIVE";
+        this.imageUrl = imageUrl != null ? imageUrl : "";
+        this.claimedBy = "";
+        this.claimDate = "";
     }
 
     public abstract String getType();
@@ -81,11 +98,50 @@ public abstract class Item implements Serializable {
         return regNo != null ? regNo : "";
     }
 
+    public String getStatus() {
+        return status != null ? status : "ACTIVE";
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getImageUrl() {
+        return imageUrl != null ? imageUrl : "";
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getClaimedBy() {
+        return claimedBy != null ? claimedBy : "";
+    }
+
+    public void setClaimedBy(String claimedBy) {
+        this.claimedBy = claimedBy;
+    }
+
+    public String getClaimDate() {
+        return claimDate != null ? claimDate : "";
+    }
+
+    public void setClaimDate(String claimDate) {
+        this.claimDate = claimDate;
+    }
+
+    public void markClaimed(String claimant, String date) {
+        this.status = "CLAIMED";
+        this.claimedBy = claimant != null ? claimant : "";
+        this.claimDate = date != null ? date : LocalDate.now().toString();
+    }
+
     @Override
     public String toString() {
         return getType() + " | " + id + " | " + name
                 + " | " + category + " | " + location
                 + " | " + date
-                + (regNo != null && !regNo.isEmpty() ? " | Reg: " + regNo : "");
+                + (regNo != null && !regNo.isEmpty() ? " | Reg: " + regNo : "")
+                + " | Status: " + getStatus();
     }
 }

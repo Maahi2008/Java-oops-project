@@ -34,13 +34,16 @@ public class DashboardServlet extends HttpServlet {
         ArrayList<Item> allItems = manager.getAllItems();
         int lostCount = 0;
         int foundCount = 0;
+        int claimedCount = 0;
         int totalCount = allItems.size();
 
-        ArrayList<Item> lostItems = new ArrayList<>();
+        ArrayList<Item> activeLostItems = new ArrayList<>();
         for (Item item : allItems) {
-            if ("LOST".equalsIgnoreCase(item.getType())) {
+            if ("CLAIMED".equalsIgnoreCase(item.getStatus())) {
+                claimedCount++;
+            } else if ("LOST".equalsIgnoreCase(item.getType())) {
                 lostCount++;
-                lostItems.add(item);
+                activeLostItems.add(item);
             } else if ("FOUND".equalsIgnoreCase(item.getType())) {
                 foundCount++;
             }
@@ -48,13 +51,13 @@ public class DashboardServlet extends HttpServlet {
 
         int matchCount = 0;
         if (matcher != null) {
-            for (Item lost : lostItems) {
+            for (Item lost : activeLostItems) {
                 ArrayList<MatchResult> matches = matcher.findMatches(lost, allItems);
                 matchCount += matches.size();
             }
         }
 
-        String json = JsonUtil.dashboardToJson(lostCount, foundCount, matchCount, totalCount);
+        String json = JsonUtil.dashboardToJson(lostCount, foundCount, matchCount, totalCount, claimedCount);
         PrintWriter out = resp.getWriter();
         out.write(json);
         out.flush();
