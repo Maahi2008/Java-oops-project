@@ -144,7 +144,19 @@ async function loadAllData() {
         }
     } catch (err) {
         state.isBackendOnline = false;
-        if (!state.items || state.items.length === 0) {
+        const stored = localStorage.getItem('muj_lost_found_items');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    state.items = parsed;
+                } else {
+                    state.items = [...INITIAL_SAMPLE_ITEMS];
+                }
+            } catch (e) {
+                state.items = [...INITIAL_SAMPLE_ITEMS];
+            }
+        } else {
             state.items = [...INITIAL_SAMPLE_ITEMS];
         }
         recalculateLocalMatches();
@@ -637,6 +649,12 @@ function clearSelectedImage(type) {
     if (previewContainer) previewContainer.style.display = 'none';
 }
 
+function saveToLocalStorage() {
+    try {
+        localStorage.setItem('muj_lost_found_items', JSON.stringify(state.items));
+    } catch (e) {}
+}
+
 /**
  * Handle Report Lost Item Form Submission
  */
@@ -704,6 +722,7 @@ async function handleReportLost(e) {
     }
 
     clearSelectedImage('lost');
+    saveToLocalStorage();
     updateDashboardStats();
     populateMatchLostSelector();
     showToast(`Lost notice for "${name}" registered for Reg No: ${regNo}! (ID: ${id})`);
@@ -778,6 +797,7 @@ async function handleReportFound(e) {
     }
 
     clearSelectedImage('found');
+    saveToLocalStorage();
     updateDashboardStats();
     populateMatchLostSelector();
     showToast(`Found item "${name}" at ${locSelect} logged successfully! (ID: ${id})`);
@@ -1135,6 +1155,7 @@ async function submitItemClaim(event) {
         item.status = 'CLAIMED';
         item.claimedBy = claimantStr;
         item.claimDate = today;
+        saveToLocalStorage();
     }
 
     recalculateLocalMatches();
@@ -1251,6 +1272,7 @@ async function deleteItem(itemId) {
     }
 
     state.items = state.items.filter(i => i.id !== itemId);
+    saveToLocalStorage();
     recalculateLocalMatches();
     updateDashboardStats();
     renderBrowseItems();

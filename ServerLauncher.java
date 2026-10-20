@@ -38,7 +38,17 @@ import java.util.concurrent.Executors;
  */
 public class ServerLauncher {
 
-    private static final int PORT = 8080;
+    private static final int PORT = getPort();
+
+    private static int getPort() {
+        String envPort = System.getenv("PORT");
+        if (envPort != null && !envPort.trim().isEmpty()) {
+            try {
+                return Integer.parseInt(envPort.trim());
+            } catch (NumberFormatException ignored) {}
+        }
+        return 8080;
+    }
     private static ItemManager manager;
     private static FileItemRepository repository;
     private static SearchService searchService;
