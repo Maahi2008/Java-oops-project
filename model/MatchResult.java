@@ -1,4 +1,3 @@
-
 package model;
 
 public class MatchResult {
@@ -27,8 +26,7 @@ public class MatchResult {
 
     @Override
     public String toString() {
-        return "Match score: " + String.format("%.1f", score) + "%"
-                + "\nLost item: " + lostItem.getName()
+        return "Lost item: " + lostItem.getName()
                 + "\nFound item: " + foundItem.getName()
                 + "\nFound reporter: " + foundItem.getReporterName()
                 + "\nContact: " + foundItem.getContact();
