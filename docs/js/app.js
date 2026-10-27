@@ -361,13 +361,16 @@ function updateDashboardStats() {
             `;
         } else {
             const topSlice = state.matches.slice(0, 3);
-            topMatchesContainer.innerHTML = topSlice.map(m => `
+            topMatchesContainer.innerHTML = topSlice.map((m, idx) => `
                 <div class="match-mini-card" onclick="navigateTo('matches')">
                     <div class="match-mini-info">
                         <span class="match-mini-title">${escapeHtml(m.lostItem.name)} &harr; ${escapeHtml(m.foundItem.name)}</span>
                         <span class="match-mini-details">${escapeHtml(m.foundItem.location)} &bull; ${escapeHtml(m.foundItem.reporterName)} (${escapeHtml(m.foundItem.regNo || 'Staff')})</span>
                     </div>
-                    <div class="match-score-pill">${m.score.toFixed(1)}%</div>
+                    <div class="match-preference-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span>#${idx + 1} Preference</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -845,17 +848,17 @@ function loadMatches() {
     if (state.isBackendOnline) {
         loadBackendMatches().then(() => {
             renderMatches();
-            showToast('MUJ match engine calculations refreshed.');
+            showToast('MUJ match engine results ranked preference-wise.');
         });
     } else {
         recalculateLocalMatches();
         renderMatches();
-        showToast('Local match evaluation refreshed.');
+        showToast('Local match evaluation ranked preference-wise.');
     }
 }
 
 /**
- * Render Match Results Cards
+ * Render Match Results Cards (Ranked Preference-Wise: Most matched at top, least matched at bottom)
  */
 function renderMatches() {
     const container = document.getElementById('matches-container');
@@ -870,7 +873,7 @@ function renderMatches() {
     }
 
     if (summaryLabel) {
-        summaryLabel.textContent = `Showing ${displayMatches.length} matching pair(s)`;
+        summaryLabel.textContent = `Showing ${displayMatches.length} matching candidate(s) (ordered by preference)`;
     }
 
     if (displayMatches.length === 0) {
@@ -881,19 +884,39 @@ function renderMatches() {
 
     if (emptyPlaceholder) emptyPlaceholder.style.display = 'none';
 
-    container.innerHTML = displayMatches.map(m => {
-        const confidenceLabel = m.score >= 80 ? 'High Confidence' : (m.score >= 50 ? 'Moderate Match' : 'Potential Lead');
+    container.innerHTML = displayMatches.map((m, index) => {
+        const rank = index + 1;
+        let preferenceLabel = '';
+        let prefTierClass = 'pref-tier-standard';
+
+        if (rank === 1) {
+            preferenceLabel = 'Top Match (Highest Preference)';
+            prefTierClass = 'pref-tier-top';
+        } else if (rank === 2) {
+            preferenceLabel = 'Strong Match (2nd Preference)';
+            prefTierClass = 'pref-tier-high';
+        } else if (rank === 3) {
+            preferenceLabel = 'Good Match (3rd Preference)';
+            prefTierClass = 'pref-tier-medium';
+        } else {
+            preferenceLabel = `Match Candidate (Rank #${rank})`;
+            prefTierClass = 'pref-tier-standard';
+        }
+
         return `
             <div class="match-card">
                 <div class="match-card-header">
                     <div class="match-header-left">
-                        <div class="match-score-badge">
-                            ${m.score.toFixed(1)}%
-                            <small>Score</small>
+                        <div class="match-preference-badge ${prefTierClass}">
+                            #${rank}
+                            <small>Priority</small>
                         </div>
                         <div>
                             <div class="match-headline">${escapeHtml(m.lostItem.name)} &harr; ${escapeHtml(m.foundItem.name)}</div>
-                            <span class="match-confidence-tag">${confidenceLabel}</span>
+                            <span class="match-preference-tag ${prefTierClass}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <span>${preferenceLabel}</span>
+                            </span>
                         </div>
                     </div>
                     <div class="item-id-pill">Lost: ${m.lostItem.id} | Found: ${m.foundItem.id}</div>

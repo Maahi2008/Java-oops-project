@@ -144,7 +144,7 @@
                     <div class="stat-info">
                         <span class="stat-label">Potential Matches</span>
                         <div class="stat-number" id="stat-matches-count">0</div>
-                        <span class="stat-subtext">Algorithmic score &ge; 30%</span>
+                        <span class="stat-subtext">Ranked preference-wise</span>
                     </div>
                     <div class="stat-arrow">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -173,7 +173,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title-group">
-                            <span class="panel-badge-blue">High Confidence</span>
+                            <span class="panel-badge-blue">Preference Ranked</span>
                             <h2 class="panel-title">Top Match Suggestions</h2>
                         </div>
                         <button class="btn-link" onclick="navigateTo('matches')">View All &rarr;</button>
@@ -537,7 +537,7 @@
                     </div>
                     <h1 class="section-title">Potential Lost &amp; Found Matches</h1>
                     <p class="section-subtitle">
-                        Multi-factor heuristic evaluation: Name Similarity (20%), Category Match (20%), Location Match (20%), Jaccard Word Similarity (25%), and Date Proximity (15%). Minimum score: 30%.
+                        Automated compatibility ranking: Candidate pairs are ordered preference-wise from highest match priority to lowest (evaluating Name, Category, Campus Location, Description &amp; Date proximity).
                     </p>
                 </div>
                 <div class="section-header-actions">
@@ -570,7 +570,7 @@
             <div id="no-matches-placeholder" class="empty-state" style="display: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
                 <h3>No Matches Detected Currently</h3>
-                <p>No pairs currently score &ge; 30% similarity. When new reports are submitted, compatibility is automatically recomputed.</p>
+                <p>No potential matching pairs detected currently. When new reports are submitted, compatibility is automatically recomputed and ranked preference-wise.</p>
                 <div class="empty-state-actions">
                     <button class="btn btn-blue" onclick="navigateTo('report-lost')">Report Lost Item</button>
                     <button class="btn btn-navy" onclick="navigateTo('report-found')">Report Found Item</button>
